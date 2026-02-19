@@ -1,0 +1,15 @@
+# VigilAero — Phase 12E-S Security Validation
+
+Date:
+Operator:
+Backend commit/branch:
+Frontend commit/branch:
+Environment: Localhost (frontend + backend)
+
+Scope:
+- Frontend dependency audit
+- Backend static analysis (Bandit)
+- API passive scan (OWASP ZAP)
+- Auth boundary checks (manual curl)
+
+Notes:

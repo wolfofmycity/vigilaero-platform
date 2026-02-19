@@ -1,0 +1,19 @@
+﻿HTTP/1.1 200 OK
+date: Fri, 23 Jan 2026 23:36:48 GMT
+server: uvicorn
+content-length: 26
+content-type: application/json
+
+{"ok":true,"incidents":[]}
+HTTP/1.1 200 OK
+date: Fri, 23 Jan 2026 23:36:54 GMT
+server: uvicorn
+content-length: 1391
+content-type: application/json
+
+{"ok":true,"events":[{"id":1,"ts":"2025-12-19T17:37:38.775813+00:00","company_id":"default","drone_id":"UA-101","incident_id":null,"event_type":"simulation_started","actor":"admin","action":"rf_jamming","result":"ok","payload_json":"{\"training\": true}"},{"id":2,"ts":"2025-12-19T17:37:39.492458+00:00","company_id":"default","drone_id":"UA-101","incident_id":"bd29c5ba-a570-4653-bed8-3cac1031ac4b","event_type":"incident_created","actor":"admin","action":"rf_jamming","result":"ok","payload_json":"{\"severity\": \"high\", \"title\": \"RF Communication Jamming\", \"training\": true}"},{"id":3,"ts":"2025-12-19T21:55:14.380427+00:00","company_id":"default","drone_id":"UA-102","incident_id":null,"event_type":"simulation_started","actor":"admin","action":"rf_jamming","result":"ok","payload_json":"{\"training\": true}"},{"id":4,"ts":"2025-12-19T21:55:15.077749+00:00","company_id":"default","drone_id":"UA-102","incident_id":"bd809fad-8a3b-4059-8bdd-0706b74be7ae","event_type":"incident_created","actor":"admin","action":"rf_jamming","result":"ok","payload_json":"{\"severity\": \"high\", \"title\": \"RF Communication Jamming\", \"training\": true}"},{"id":5,"ts":"2025-12-20T18:42:34.431900+00:00","company_id":"default","drone_id":"UA-101","incident_id":null,"event_type":"simulation_started","actor":"admin","action":"rf_jamming","result":"ok","payload_json":"{\"training\": true}"}]}
+
+PASS 3: Auth Boundary Verification
+- GET /api/incidents/active without token -> 403 (expected)
+- GET /api/incidents/active with valid JWT -> 200 OK (expected)
+- Conclusion: Protected endpoints enforce auth; no unauthenticated incident leakage observed.

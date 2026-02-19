@@ -1,0 +1,70 @@
+Run started:2026-01-23 20:07:14.016586+00:00
+
+Test results:
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'DEV_ONLY_CHANGE_ME'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.3/plugins/b105_hardcoded_password_string.html
+   Location: .\auth.py:15:13
+14	
+15	JWT_SECRET = "DEV_ONLY_CHANGE_ME"
+16	JWT_ALG = "HS256"
+
+--------------------------------------------------
+>> Issue: [B105:hardcoded_password_string] Possible hardcoded password: 'admin'
+   Severity: Low   Confidence: Medium
+   CWE: CWE-259 (https://cwe.mitre.org/data/definitions/259.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.3/plugins/b105_hardcoded_password_string.html
+   Location: .\auth.py:22:8
+21	    "admin": {
+22	        "password": "admin",
+23	        "role": "Admin",
+24	        "company_id": "default",
+25	    }
+26	}
+27	
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.3/plugins/b608_hardcoded_sql_expressions.html
+   Location: .\db.py:351:10
+350	    cur.execute(
+351	        f"UPDATE incidents SET {', '.join(fields)} WHERE incident_id=?",
+352	        params,
+
+--------------------------------------------------
+>> Issue: [B608:hardcoded_sql_expressions] Possible SQL injection vector through string-based query construction.
+   Severity: Medium   Confidence: Medium
+   CWE: CWE-89 (https://cwe.mitre.org/data/definitions/89.html)
+   More Info: https://bandit.readthedocs.io/en/1.9.3/plugins/b608_hardcoded_sql_expressions.html
+   Location: .\db.py:464:12
+463	    cur.execute(
+464	        f"""
+465	        SELECT * FROM forensics_events
+466	        WHERE {where}
+467	        ORDER BY ts ASC
+468	        LIMIT ?
+469	        """,
+470	        (*params, limit),
+
+--------------------------------------------------
+
+Code scanned:
+	Total lines of code: 790
+	Total lines skipped (#nosec): 0
+	Total potential issues skipped due to specifically being disabled (e.g., #nosec BXXX): 0
+
+Run metrics:
+	Total issues (by severity):
+		Undefined: 0
+		Low: 2
+		Medium: 2
+		High: 0
+	Total issues (by confidence):
+		Undefined: 0
+		Low: 0
+		Medium: 4
+		High: 0
+Files skipped (0):

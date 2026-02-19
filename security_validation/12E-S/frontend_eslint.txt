@@ -1,0 +1,22 @@
+﻿
+E:\drone-guard\src\components\ComplianceMonitor.js
+  1:27  warning  'useEffect' is defined but never used                   no-unused-vars
+  5:26  warning  'setComplianceData' is assigned a value but never used  no-unused-vars
+
+E:\drone-guard\src\components\MapPanel.js
+   88:9   warning  'isStrategic' is assigned a value but never used  no-unused-vars
+   89:9   warning  'isTactical' is assigned a value but never used   no-unused-vars
+  223:19  warning  'riskColor' is assigned a value but never used    no-unused-vars
+
+E:\drone-guard\src\components\SecurityMonitor.js
+  30:10  warning  'scanning' is assigned a value but never used           no-unused-vars
+  82:9   warning  'startSecurityScan' is assigned a value but never used  no-unused-vars
+
+E:\drone-guard\src\components\TelemetryTable.js
+  6:19  warning  'setLoading' is assigned a value but never used  no-unused-vars
+
+E:\drone-guard\src\components\security\FleetOverview.js
+  120:17  warning  'batteryLow' is assigned a value but never used  no-unused-vars
+
+Γ£û 9 problems (0 errors, 9 warnings)
+

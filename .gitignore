@@ -1,0 +1,11 @@
+﻿venv/
+__pycache__/
+node_modules/
+.next/
+dist/
+build/
+.env
+.env.local
+.vercel/
+coverage/
+.DS_Store
