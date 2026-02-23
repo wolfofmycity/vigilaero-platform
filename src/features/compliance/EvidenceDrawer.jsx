@@ -53,7 +53,35 @@ export default function EvidenceDrawer(props) {
     isAdmin,
     onReviewEvidence,
     reviewingEvidenceId,
+    evidenceSummary,
   } = props;
+
+  const [reviewingItemId, setReviewingItemId] = React.useState(null);
+  const [reviewNote, setReviewNote] = React.useState('');
+  const [pendingReviewDecision, setPendingReviewDecision] = React.useState(null);
+
+  const handleReviewClick = (item, decision) => {
+    if (item.review_status === decision) return;
+    setReviewingItemId(item.id);
+    setPendingReviewDecision(decision);
+    setReviewNote('');
+  };
+
+  const confirmReview = async (evidenceId, decision) => {
+    if (!reviewNote.trim()) return;
+
+    await onReviewEvidence(evidenceId, decision, reviewNote);
+
+    setReviewingItemId(null);
+    setReviewNote('');
+    setPendingReviewDecision(null);
+  };
+
+  const cancelReview = () => {
+    setReviewingItemId(null);
+    setReviewNote('');
+    setPendingReviewDecision(null);
+  };
 
   if (!isOpen) return null;
 
@@ -78,6 +106,31 @@ export default function EvidenceDrawer(props) {
               <p className="text-xs text-slate-400 mb-1">
                 Control {selectedControl?.id}: {selectedControl?.title}
               </p>
+              {evidenceSummary && selectedControl && (
+                <div className="flex items-center gap-3 mt-2 p-2 rounded-lg bg-slate-950/60 border border-slate-700/40">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs text-slate-500">Accepted:</span>
+                    <span className="text-xs font-bold text-emerald-300">
+                      {evidenceSummary.accepted_by_control?.[selectedControl.id] || 0}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs text-slate-500">Pending:</span>
+                    <span className="text-xs font-bold text-amber-300">
+                      {evidenceSummary.pending_by_control?.[selectedControl.id] || 0}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-xs text-slate-500">Rejected:</span>
+                    <span className="text-xs font-bold text-rose-300">
+                      {evidenceSummary.rejected_by_control?.[selectedControl.id] || 0}
+                    </span>
+                  </div>
+                  <div className="ml-auto text-xs text-slate-500 italic">
+                    Met when Accepted {'>='} 1
+                  </div>
+                </div>
+              )}
               {complianceScope === 'drone' && scopedDroneId ? (
                 <div className="flex items-center gap-1.5 mt-1">
                   <span className="text-xs text-slate-500">Showing:</span>
@@ -319,22 +372,55 @@ export default function EvidenceDrawer(props) {
                   </div>
                 </div>
 
-                {isAdmin && item.review_status === 'pending' && (
-                  <div className="flex gap-2 mt-3 pt-3 border-t border-slate-800/60">
-                    <button
-                      onClick={() => onReviewEvidence(item.id, 'accepted')}
-                      disabled={attachLoading || reviewingEvidenceId === item.id}
-                      className="flex-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-3 py-2 text-xs font-semibold text-emerald-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Accept
-                    </button>
-                    <button
-                      onClick={() => onReviewEvidence(item.id, 'rejected')}
-                      disabled={attachLoading || reviewingEvidenceId === item.id}
-                      className="flex-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-3 py-2 text-xs font-semibold text-rose-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                    >
-                      Reject
-                    </button>
+                {isAdmin && (
+                  <div className="mt-3 pt-3 border-t border-slate-800/60">
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleReviewClick(item, 'accepted')}
+                        disabled={evidenceLoading || !!reviewingEvidenceId || item.review_status === 'accepted'}
+                        className="flex-1 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 px-3 py-2 text-xs font-semibold text-emerald-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {item.review_status === 'accepted' ? 'Accepted' : 'Mark Accepted'}
+                      </button>
+                      <button
+                        onClick={() => handleReviewClick(item, 'rejected')}
+                        disabled={evidenceLoading || !!reviewingEvidenceId || item.review_status === 'rejected'}
+                        className="flex-1 rounded-lg bg-rose-500/10 hover:bg-rose-500/20 border border-rose-500/30 px-3 py-2 text-xs font-semibold text-rose-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        {item.review_status === 'rejected' ? 'Rejected' : 'Mark Rejected'}
+                      </button>
+                    </div>
+
+                    {reviewingItemId === item.id && (
+                      <div className="mt-2">
+                        <label className="block text-xs text-slate-400 mb-1.5">
+                          Reviewer Note <span className="text-rose-400">*</span>
+                        </label>
+                        <textarea
+                          value={reviewNote}
+                          onChange={(e) => setReviewNote(e.target.value)}
+                          placeholder="Required when changing review status..."
+                          rows={2}
+                          className="w-full rounded-lg bg-slate-900 border border-slate-700/60 px-3 py-2 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all resize-none"
+                        />
+                        <div className="flex gap-2 mt-2">
+                          <button
+                            onClick={() => confirmReview(item.id, pendingReviewDecision)}
+                            disabled={!reviewNote.trim() || evidenceLoading || !!reviewingEvidenceId}
+                            className="flex-1 rounded-lg bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 px-3 py-2 text-xs font-semibold text-blue-300 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                          >
+                            Confirm
+                          </button>
+                          <button
+                            onClick={cancelReview}
+                            disabled={evidenceLoading || !!reviewingEvidenceId}
+                            className="flex-1 rounded-lg bg-slate-800 hover:bg-slate-750 border border-slate-700/60 px-3 py-2 text-xs font-semibold text-slate-300 transition-all"
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 )}
               </div>

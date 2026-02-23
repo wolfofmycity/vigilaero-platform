@@ -6,7 +6,7 @@ import LiveTelemetry from "./LiveTelemetry";
 import TelemetryLogs from "./TelemetryLogs";
 import ThreatSimulation from "./ThreatSimulation";
 import IncidentResponse from "./IncidentResponse";
-import ComplianceMonitor from "./ComplianceMonitor";
+import ComplianceMonitor from "../features/compliance/ComplianceMonitor";
 import ProtectionSystems from "./ProtectionSystems";
 import ReportGenerator from "./ReportGenerator";
 import SecuritySettings from "./SecuritySettings";
